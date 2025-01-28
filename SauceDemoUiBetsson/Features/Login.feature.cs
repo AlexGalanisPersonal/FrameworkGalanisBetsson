@@ -35,8 +35,8 @@ namespace SauceDemoUiBetsson.Features
         public virtual void FeatureSetup()
         {
             testRunner = TechTalk.SpecFlow.TestRunnerManager.GetTestRunner();
-            TechTalk.SpecFlow.FeatureInfo featureInfo = new TechTalk.SpecFlow.FeatureInfo(new System.Globalization.CultureInfo("en-US"), "Features", "Login Functionality", "As a user of the sauce demo website\r\nI want to be able to log in\r\nSo that I can a" +
-                    "ccess the inventory", ProgrammingLanguage.CSharp, featureTags);
+            TechTalk.SpecFlow.FeatureInfo featureInfo = new TechTalk.SpecFlow.FeatureInfo(new System.Globalization.CultureInfo("en-US"), "Features", "Login Functionality", "    As a user of the sauce demo website\r\n    I want to be able to log in\r\n    So " +
+                    "that I can access the inventory", ProgrammingLanguage.CSharp, featureTags);
             testRunner.OnFeatureStart(featureInfo);
         }
         
@@ -95,7 +95,7 @@ namespace SauceDemoUiBetsson.Features
         testRunner.Given("I am on the login page", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
 #line hidden
 #line 8
-        testRunner.When("I enter valid username \"standard_user\" and password \"secret_sauce\"", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
+        testRunner.When("I log in as \"standard\"", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
 #line hidden
 #line 9
         testRunner.Then("I should be redirected to the inventory page", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
@@ -125,10 +125,11 @@ namespace SauceDemoUiBetsson.Features
         testRunner.Given("I am on the login page", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
 #line hidden
 #line 13
-        testRunner.When("I enter invalid username \"invalid_user\" and password \"invalid_pass\"", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
+        testRunner.When("I log in as \"invalid\"", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
 #line hidden
 #line 14
-        testRunner.Then("I should see an error message", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
+        testRunner.Then("I should see an error message \"Epic sadface: Username and password do not match a" +
+                        "ny user in this service\"", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
 #line hidden
             }
             this.ScenarioCleanup();
@@ -155,10 +156,11 @@ namespace SauceDemoUiBetsson.Features
         testRunner.Given("I am on the login page", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
 #line hidden
 #line 18
-        testRunner.When("I enter locked out username \"locked_out_user\" and password \"secret_sauce\"", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
+        testRunner.When("I log in as \"locked\"", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
 #line hidden
 #line 19
-        testRunner.Then("I should see a locked out error message", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
+        testRunner.Then("I should see an error message \"Epic sadface: Sorry, this user has been locked out" +
+                        ".\"", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
 #line hidden
             }
             this.ScenarioCleanup();

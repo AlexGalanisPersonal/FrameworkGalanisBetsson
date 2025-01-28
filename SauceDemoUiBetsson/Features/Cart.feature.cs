@@ -92,7 +92,7 @@ namespace SauceDemoUiBetsson.Features
             {
                 this.ScenarioStart();
 #line 7
-        testRunner.Given("I am logged in as \"standard_user\"", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
+        testRunner.Given("I am logged in as \"standard\"", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
 #line hidden
 #line 8
         testRunner.When("I add \"Sauce Labs Backpack\" to the cart", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
@@ -122,7 +122,7 @@ namespace SauceDemoUiBetsson.Features
             {
                 this.ScenarioStart();
 #line 12
-        testRunner.Given("I am logged in as \"standard_user\"", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
+        testRunner.Given("I am logged in as \"standard\"", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
 #line hidden
 #line 13
         testRunner.When("I add \"Sauce Labs Backpack\" to the cart", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
@@ -155,7 +155,7 @@ namespace SauceDemoUiBetsson.Features
             {
                 this.ScenarioStart();
 #line 18
-        testRunner.Given("I am logged in as \"standard_user\"", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
+        testRunner.Given("I am logged in as \"standard\"", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
 #line hidden
 #line 19
         testRunner.And("I have added \"Sauce Labs Backpack\" to the cart", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");

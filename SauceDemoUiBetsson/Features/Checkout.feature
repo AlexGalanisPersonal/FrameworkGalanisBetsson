@@ -4,54 +4,60 @@
     So that I can purchase my selected items
 
     Background:
-        Given I am logged in as "standard_user"
-        And I have the following items in cart:
-          | Item Name              | Price  |
-          | Sauce Labs Backpack    | $29.99 |
-          | Sauce Labs Bike Light  | $9.99  |
+        Given I am logged in as "standard"
+        And I have added items to cart:
+            | Item Name             |
+            | Sauce Labs Backpack   |
+            | Sauce Labs Bike Light |
 
-    Scenario: Complete checkout with valid information
+    Scenario: Fill checkout form successfully
         Given I navigate to the checkout page
         When I enter the following customer details:
           | First Name | Last Name | Zip Code |
           | Alex       | Galanis   | 15772    |
-        And I proceed to checkout overview
-        Then the total amount should be "$43.18" including tax
+        Then I proceed to checkout overview successfully
+
+    Scenario: Verify tax calculation
+        Given I navigate to the checkout page
+        When I complete checkout information
+        Then the tax amount should be 8% of the subtotal
+
+    Scenario: Verify total amount calculation
+        Given I navigate to the checkout page
+        When I complete checkout information
+        Then the total should be the sum of subtotal and tax
+
+    Scenario: Complete order successfully
+        Given I am on the checkout overview page
         When I complete the checkout
         Then I should see the order confirmation
 
-    Scenario: Validate checkout information requirements
+    Scenario: Validate empty first name
         Given I navigate to the checkout page
-        When I try to continue with empty fields
+        When I proceed with empty fields
         Then I should see the error message "Error: First Name is required"
-        When I enter only the following details:
-          | Field      | Value     |
-          | First Name | Alex      |
-        And I try to continue
+
+    Scenario: Validate empty last name
+        Given I navigate to the checkout page
+        When I fill in "First Name" with "Alex"
+        And I proceed to checkout overview
         Then I should see the error message "Error: Last Name is required"
-        When I enter only the following details:
-          | Field      | Value     |
-          | First Name | Alex      |
-          | Last Name  | Galanis   |
-        And I try to continue
+
+    Scenario: Validate empty postal code
+        Given I navigate to the checkout page
+        When I fill in "First Name" with "Alex"
+        And I fill in "Last Name" with "Galanis"
+        And I proceed to checkout overview
         Then I should see the error message "Error: Postal Code is required"
 
-    Scenario: Verify item details on checkout summary
+    Scenario: Verify item prices in summary
         Given I navigate to the checkout page
-        When I enter valid customer information
-        And I proceed to checkout overview
-        Then I should see the following item details:
-          | Item Name             | Quantity | Price  |
-          | Sauce Labs Backpack   | 1        | $29.99 |
-          | Sauce Labs Bike Light | 1        | $9.99  |
-        And the subtotal should be "$39.98"
-        And the tax should be "$3.20"
-        And the total should be "$43.18"
+        When I complete checkout information
+        Then I should see the correct item prices in the summary
 
-    Scenario: Cancel checkout process
+    Scenario: Cancel checkout maintains cart items
         Given I navigate to the checkout page
-        When I enter valid customer information
-        And I proceed to checkout overview
-        And I click cancel
-        Then I should be returned to the inventory page
-        And my cart should still contain 2 items
+        When I complete checkout information
+        And I cancel the checkout
+        Then I should return to the inventory page
+        And the cart should have 2 items

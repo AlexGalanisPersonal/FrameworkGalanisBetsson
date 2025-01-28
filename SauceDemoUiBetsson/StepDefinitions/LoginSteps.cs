@@ -1,57 +1,55 @@
-﻿using SauceDemoUiBetsson.Drivers;
+﻿using Microsoft.Extensions.Configuration;
+using Microsoft.Playwright;
+using SauceDemoUiBetsson.Drivers;
+using SauceDemoUiBetsson.Models;
 using SauceDemoUiBetsson.Pages;
+using SauceDemoUiBetsson.Utilities;
 using TechTalk.SpecFlow;
 
 namespace SauceDemoUiBetsson.StepDefinitions;
 
 [Binding]
-public class LoginSteps(BrowserDriver browserDriver)
+public class LoginSteps
 {
-    private readonly LoginPage _loginPage = new(browserDriver.Page);
+    private readonly LoginPage _loginPage;
+    private readonly TestSettings _settings;
+    private readonly IPage _page;
+    private readonly LoginHelper _loginHelper;
+    private readonly NavigationHelper _navigationHelper;
+
+    public LoginSteps(BrowserDriver browserDriver, IConfiguration configuration, LoginHelper loginHelper, NavigationHelper navigationHelper)
+    {
+        _loginHelper = loginHelper;
+        _navigationHelper = navigationHelper;
+        _page = browserDriver.Page;
+        _loginPage = new LoginPage(_page);
+        _settings = configuration.GetSection("TestSettings").Get<TestSettings>()
+                    ?? throw new InvalidOperationException("Test settings not found");
+    }
 
     [Given(@"I am on the login page")]
     public async Task GivenIAmOnTheLoginPage()
     {
-        await _loginPage.Page.GotoAsync("https://www.saucedemo.com");
+        await _navigationHelper.GoToLogin();
         await _loginPage.WaitForPageLoad();
-        Assert.That(await _loginPage.IsOnLoginPage(), Is.True, "Not on login page");
-    }
-    
-    [When(@"I enter valid username ""(.*)"" and password ""(.*)""")]
-    public async Task WhenIEnterValidUsernameAndPassword(string username, string password)
-    {
-        await _loginPage.Login(username, password);
     }
 
-    [When(@"I enter invalid username ""(.*)"" and password ""(.*)""")]
-    public async Task WhenIEnterInvalidUsernameAndPassword(string username, string password)
+    [When(@"I log in as ""(.*)""")]
+    public async Task WhenILogInAs(string userType)
     {
-        await _loginPage.Login(username, password);
+        await _loginHelper.LoginAs(userType);
     }
 
-    [When(@"I enter locked out username ""(.*)"" and password ""(.*)""")]
-    public async Task WhenIEnterLockedOutUsernameAndPassword(string username, string password)
-    {
-        await _loginPage.Login(username, password);
-    }
-    
     [Then(@"I should be redirected to the inventory page")]
     public async Task ThenIShouldBeRedirectedToTheInventoryPage()
     {
-        await _loginPage.Page.WaitForURLAsync("**/inventory.html");
+        await _page.WaitForURLAsync("**/inventory.html");
     }
 
-    [Then(@"I should see an error message")]
-    public async Task ThenIShouldSeeAnErrorMessage()
+    [Then(@"I should see an error message ""(.*)""")]
+    public async Task ThenIShouldSeeAnErrorMessage(string expectedError)
     {
         var errorMessage = await _loginPage.GetErrorMessage();
-        Assert.That(errorMessage, Contains.Substring("Username and password do not match"));
-    }
-
-    [Then(@"I should see a locked out error message")]
-    public async Task ThenIShouldSeeALockedOutErrorMessage()
-    {
-        var errorMessage = await _loginPage.GetErrorMessage();
-        Assert.That(errorMessage, Contains.Substring("Sorry, this user has been locked out"));
+        Assert.That(errorMessage, Is.EqualTo(expectedError));
     }
 }

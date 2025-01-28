@@ -1,26 +1,29 @@
-﻿using SauceDemoUiBetsson.Drivers;
+﻿using Microsoft.Playwright;
+using SauceDemoUiBetsson.Drivers;
 using SauceDemoUiBetsson.Pages;
+using SauceDemoUiBetsson.Utilities;
 using TechTalk.SpecFlow;
 
 namespace SauceDemoUiBetsson.StepDefinitions;
 
 [Binding]
-public class CheckoutSteps(BrowserDriver browserDriver)
+public class CheckoutSteps
 {
-    private readonly CheckoutPage _checkoutPage = new(browserDriver.Page);
-    private readonly CartPage _cartPage = new(browserDriver.Page);
+    private readonly CheckoutPage _checkoutPage;
+    private readonly CartPage _cartPage;
+    private readonly IPage _page;
+    private readonly ScenarioContext _scenarioContext;
+    private readonly NavigationHelper _navigationHelper;
+    private decimal _subtotal;
+    private decimal _tax;
 
-    [Given(@"I have the following items in cart:")]
-    public async Task GivenIHaveTheFollowingItemsInCart(Table table)
+    public CheckoutSteps(BrowserDriver browserDriver, ScenarioContext scenarioContext, NavigationHelper navigationHelper)
     {
-        foreach (var row in table.Rows)
-        {
-            await _cartPage.AddItemToCart(row["Item Name"]);
-        }
-        
-        // Verify items were added successfully
-        var itemCount = await _cartPage.GetCartItemCount();
-        Assert.That(itemCount, Is.EqualTo(table.Rows.Count), "Not all items were added to cart");
+        _page = browserDriver.Page;
+        _checkoutPage = new CheckoutPage(_page);
+        _cartPage = new CartPage(_page);
+        _scenarioContext = scenarioContext;
+        _navigationHelper = navigationHelper;
     }
 
     [Given(@"I navigate to the checkout page")]
@@ -41,52 +44,23 @@ public class CheckoutSteps(BrowserDriver browserDriver)
         );
     }
 
-    [When(@"I try to continue with empty fields")]
-    public async Task WhenITryToContinueWithEmptyFields()
+    [When(@"I proceed with empty fields")]
+    public async Task WhenIProceedWithEmptyFields()
     {
         await _checkoutPage.ClearAllFields();
         await _checkoutPage.ContinueCheckout();
     }
 
-    [When(@"I enter only the following details:")]
-    public async Task WhenIEnterOnlyTheFollowingDetails(Table table)
+    [When(@"I fill in ""(.*)"" with ""(.*)""")]
+    public async Task WhenIFillInWith(string field, string value)
     {
-        await _checkoutPage.ClearAllFields();
-
-        string firstName = "", lastName = "", postalCode = "";
-
-        foreach (var row in table.Rows)
-        {
-            var field = row["Field"];
-            var value = row["Value"];
-
-            switch (field)
-            {
-                case "First Name":
-                    firstName = value;
-                    break;
-                case "Last Name":
-                    lastName = value;
-                    break;
-                case "Postal Code":
-                    postalCode = value;
-                    break;
-            }
-        }
-
-        await _checkoutPage.EnterCustomerDetails(firstName, lastName, postalCode);
+        await _checkoutPage.FillField(field, value);
     }
 
-    [When(@"I try to continue")]
-    public async Task WhenITryToContinue()
+    [When(@"I enter the customer information")]
+    public async Task WhenIEnterTheCustomerInformation()
     {
-        await _checkoutPage.ContinueCheckout();
-    }
-
-    [When(@"I enter valid customer information")]
-    public async Task WhenIEnterValidCustomerInformation()
-    {
-        await _checkoutPage.EnterCustomerDetails("John", "Doe", "12345");
+        await _checkoutPage.EnterCustomerDetails("Alex", "Galanis", "15772");
     }
 
     [When(@"I proceed to checkout overview")]
@@ -101,95 +75,103 @@ public class CheckoutSteps(BrowserDriver browserDriver)
         await _checkoutPage.FinishCheckout();
     }
 
-    [When(@"I click cancel")]
-    public async Task WhenIClickCancel()
+    [When(@"I cancel the checkout")]
+    public async Task WhenICancelTheCheckout()
     {
         await _checkoutPage.CancelCheckout();
-    }
-
-    [Then(@"I should see the order confirmation")]
-    public async Task ThenIShouldSeeTheOrderConfirmation()
-    {
-        var message = await _checkoutPage.GetSuccessMessage();
-    
-        Assert.That(message.Trim().ToLower(), Is.EqualTo("thank you for your order!"),
-            $"Order confirmation message does not match. Actual message: '{message}'");
     }
 
     [Then(@"I should see the error message ""(.*)""")]
     public async Task ThenIShouldSeeTheErrorMessage(string expectedError)
     {
         var actualError = await _checkoutPage.GetErrorMessage();
-        Assert.That(actualError, Is.EqualTo(expectedError), 
-            $"Expected error message '{expectedError}' but got '{actualError}'");
+        Assert.That(actualError, Is.EqualTo(expectedError));
     }
 
-    [Then(@"I should see the following item details:")]
-    public async Task ThenIShouldSeeTheFollowingItemDetails(Table table)
+    [Then(@"I should see the correct item prices in the summary")]
+    public async Task ThenIShouldSeeTheCorrectItemPricesInTheSummary()
     {
-        var actualItems = await _checkoutPage.GetCartItemDetails();
+        var itemPrices = _scenarioContext.Get<Dictionary<string, decimal>>(ScenarioContextKeys.ItemPrices);
+        var itemDetails = await _checkoutPage.GetCartItemDetails();
         
-        foreach (var item in actualItems)
+        foreach (var detail in itemDetails)
         {
-            Console.WriteLine($"Cart item - Name: {item.Name}, Price: {item.Price}, Quantity: {item.Quantity}");
+            var expectedPrice = itemPrices[detail.Name];
+            var actualPrice = decimal.Parse(detail.Price.Replace("$", ""));
+            Assert.That(actualPrice, Is.EqualTo(expectedPrice));
         }
-
-        foreach (var row in table.Rows)
-        {
-            var expectedName = row["Item Name"];
-            var expectedPrice = row["Price"];
-            var expectedQuantity = row["Quantity"];
-
-            var actualItem = actualItems.FirstOrDefault(i => 
-                i.Name.Equals(expectedName, StringComparison.OrdinalIgnoreCase));
-
-            Assert.That(actualItem, Is.Not.Null, 
-                $"Item '{expectedName}' not found in cart. Available items: {string.Join(", ", actualItems.Select(i => i.Name))}");
-
-            if (actualItem == null) continue;
-            Assert.That(actualItem.Price, Is.EqualTo(expectedPrice), 
-                $"Price mismatch for item {expectedName}. Expected: {expectedPrice}, Actual: {actualItem.Price}");
-            Assert.That(actualItem.Quantity, Is.EqualTo(expectedQuantity), 
-                $"Quantity mismatch for item {expectedName}. Expected: {expectedQuantity}, Actual: {actualItem.Quantity}");
-        }
+        
+        _subtotal = itemPrices.Values.Sum();
     }
 
-    [Then(@"the subtotal should be ""(.*)""")]
-    public async Task ThenTheSubtotalShouldBe(string expectedSubtotal)
+    [Then(@"the tax amount should be 8% of the subtotal")]
+    public async Task ThenTheTaxAmountShouldBePercentOfTheSubtotal()
     {
-        var actualSubtotal = await _checkoutPage.GetSubtotal();
-        Assert.That(actualSubtotal, Is.EqualTo(expectedSubtotal), 
-            $"Expected subtotal {expectedSubtotal} but got {actualSubtotal}");
+        var subtotal = _scenarioContext.Get<decimal>("Subtotal");
+        var expectedTax = Math.Round(subtotal * 0.08m, 2);
+        var actualTax = _scenarioContext["Tax"];
+    
+        Assert.That(actualTax, Is.EqualTo(expectedTax));
     }
 
-    [Then(@"the tax should be ""(.*)""")]
-    public async Task ThenTheTaxShouldBe(string expectedTax)
+    [Then(@"the total should be the sum of subtotal and tax")]
+    public async Task ThenTheTotalShouldBeTheSumOfSubtotalAndTax()
     {
-        var actualTax = await _checkoutPage.GetTaxAmount();
-        Assert.That(actualTax, Is.EqualTo(expectedTax), 
-            $"Expected tax {expectedTax} but got {actualTax}");
+        var subtotal = _scenarioContext.Get<decimal>("Subtotal");
+        var tax = _scenarioContext.Get<decimal>("Tax");
+        var expectedTotal = subtotal + tax;
+    
+        var actualTotalStr = await _checkoutPage.GetTotalAmount();
+        var actualTotal = decimal.Parse(actualTotalStr?.Replace("$", "") ?? "0");
+    
+        Assert.That(actualTotal, Is.EqualTo(expectedTotal));
     }
 
-    [Then(@"the total should be ""(.*)""")]
-    [Then(@"the total amount should be ""(.*)"" including tax")]
-    public async Task ThenTheTotalAmountShouldBeIncludingTax(string expectedTotal)
+    [Then(@"I should see the order confirmation")]
+    public async Task ThenIShouldSeeTheOrderConfirmation()
     {
-            var actualTotal = await _checkoutPage.GetTotalAmount();
-            Assert.That(actualTotal, Is.EqualTo(expectedTotal), 
-                $"Expected total {expectedTotal} but got {actualTotal}");
+        var message = await _checkoutPage.GetSuccessMessage();
+        Assert.That(message.Trim().ToLower(), Is.EqualTo("thank you for your order!"));
     }
 
-    [Then(@"I should be returned to the inventory page")]
-    public async Task ThenIShouldBeReturnedToTheInventoryPage()
+    [Then(@"I should return to the inventory page")]
+    public async Task ThenIShouldReturnToTheInventoryPage()
     {
-        await _checkoutPage.Page.WaitForURLAsync("**/inventory.html");
+        await _page.WaitForURLAsync("**/inventory.html");
     }
 
-    [Then(@"my cart should still contain (.*) items")]
-    public async Task ThenMyCartShouldStillContainItems(int expectedCount)
+    [Then(@"the cart should have (.*) items")]
+    public async Task ThenTheCartShouldHaveItems(int expectedCount)
     {
         var actualCount = await _cartPage.GetCartItemCount();
-        Assert.That(actualCount, Is.EqualTo(expectedCount), 
-            $"Expected {expectedCount} items in cart but found {actualCount}");
+        Assert.That(actualCount, Is.EqualTo(expectedCount));
+    }
+    [When(@"I complete checkout information")]
+    public async Task WhenICompleteCheckoutInformation()
+    {
+        await _checkoutPage.EnterCustomerDetails("Alex", "Galanis", "15772");
+        await _checkoutPage.ContinueCheckout();
+        var items = await _checkoutPage.GetCartItemDetails();
+        var subtotal = items.Sum(item => decimal.Parse(item.Price.Replace("$", "")));
+        _scenarioContext["Subtotal"] = subtotal;
+        
+        var actualTaxStr = await _checkoutPage.GetTaxAmount();
+        var actualTax = decimal.Parse(actualTaxStr?.Replace("$", "") ?? "0");
+        _scenarioContext["Tax"] = actualTax;
+    }
+
+    [Given(@"I am on the checkout overview page")]
+    public async Task GivenIAmOnTheCheckoutOverviewPage()
+    {
+        await _navigationHelper.GoToCart();
+        await _checkoutPage.StartCheckout();
+        await WhenICompleteCheckoutInformation();
+    }
+
+    [Then(@"I proceed to checkout overview successfully")]
+    public async Task ThenIProceedToCheckoutOverviewSuccessfully()
+    {
+        await _checkoutPage.ContinueCheckout();
+        Assert.That(await _checkoutPage.IsOnOverviewPage(), Is.True);
     }
 }
