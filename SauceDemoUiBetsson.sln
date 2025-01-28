@@ -1,6 +1,6 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SauceDemoUiBetsson", "SauceDemoUiBetsson\SauceDemoUiBetsson.csproj", "{F15E9E4C-BB6D-4C61-94BD-8C1E7EFE8990}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FrameworkGalanisBetsson", "FrameworkGalanisBetsson\FrameworkGalanisBetsson.csproj", "{F15E9E4C-BB6D-4C61-94BD-8C1E7EFE8990}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
