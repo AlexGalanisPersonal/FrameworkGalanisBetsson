@@ -17,7 +17,8 @@ So that I can track pet purchases
         When I request the order by its ID
         Then the order details should be correctly returned
         And the order status should be "placed"
-
+   
+    @DeleteOrder
     Scenario: Delete an order
         Given there is an existing order in the store
         When I delete the order

@@ -54,18 +54,16 @@ public class StoreSteps(ApiClient apiClient, ScenarioContext scenarioContext)
         await GivenIHaveAnExistingPetInTheStore();
         var pet = scenarioContext.Get<Pet>("TestPet");
 
-        _testOrder = new StoreOrder
+        var order = new StoreOrder
         {
             Id = DateTime.Now.Ticks,
             PetId = pet.Id,
             Quantity = 1,
             ShipDate = DateTime.UtcNow.ToString("O"),
-            Status = "placed",
-            Complete = false
+            Status = "placed"
         };
 
-        var response = await apiClient.Post<StoreOrder>("/store/order", _testOrder);
-        scenarioContext["TestOrder"] = response;
+        scenarioContext["TestOrder"] = await apiClient.Post<StoreOrder>("/store/order", order);
     }
 
     [When(@"I request the order by its ID")]

@@ -1,229 +1,130 @@
-﻿# 🎯Sauce Demo UI Test Automation Framework
+﻿# 🎯Test Automation Framework
 
-A comprehensive end-to-end UI test automation framework for the Sauce Demo application using Playwright, SpecFlow, and C#.
+A comprehensive end-to-end test automation framework that combines UI testing (Sauce Demo website) and API testing (Pet Store API) using Playwright, SpecFlow, and C#. The framework demonstrates modern testing practices and clean architecture principles.
 
-## 💡Technologies Used
+## 📋Project Overview
 
-- **Playwright**: Modern browser automation library
-- **SpecFlow**: BDD framework for .NET
-- **C#**: Programming language
-- **NUnit**: Test framework
-- **.NET 8+**: Framework version
+The framework is divided into two main testing domains:
 
-## 🛠️Project Structure
+### 1. UI Testing (UISauceDemo)
+Handles automated testing of the Sauce Demo e-commerce website with components:
+- **Features**: BDD feature files for login, cart, and checkout flows
+- **Pages**: Page Object Models for each webpage
+- **StepDefinitions**: Implementation of BDD test steps
+- **Utilities**: Helper classes for configuration, logging, navigation, and login
 
+### 2. API Testing (ApiPetStore)
+Manages automated testing of the Pet Store API with components:
+- **Features**: BDD feature files for pet, store, and user endpoints
+- **Helpers**: API client and request handling
+- **Models**: Data models for API requests/responses
+- **StepDefinitions**: Implementation of API test steps
+
+## 🏗️Architecture Overview
+
+### Core Components
+1. **Test Organization**
 ```
-├── Features/
-│   ├── Cart.feature
-│   ├── Checkout.feature
-│   └── Login.feature
-├── Pages/
-│   ├── BasePage.cs
-│   ├── CartPage.cs
-│   ├── CheckoutPage.cs
-│   └── LoginPage.cs
-├── StepDefinitions/
-│   ├── CartSteps.cs
-│   ├── CheckoutSteps.cs
-│   └── LoginSteps.cs
-├── Models/
-│   └── CartItemDetails.cs
-├── Hooks/
-│   ├── TestHooks.cs
-│   └── ExternalReportHooks.cs
-├── Utilities/
-│   └── LoggerConfig.cs
-└── appsettings.json
+├── ApiPetStore/
+│   ├── Features/         # API test scenarios
+│   ├── Helpers/         # API client and utilities
+│   ├── Models/          # API data models
+│   └── StepDefinitions/ # API test steps
+├── UISauceDemo/
+│   ├── Features/        # UI test scenarios
+│   ├── Pages/          # Page Object Models
+│   ├── StepDefinitions/# UI test steps
+│   └── Utilities/      # Helper classes
+│── Hooks/              # Test lifecycle management
+└── Drivers/             #  Manages browser lifecycle using Playwright
 ```
 
-## 🔍Features Covered
+2. **Framework Infrastructure**
+- **Drivers**: Browser management using Playwright
+- **Hooks**: Test lifecycle, dependency injection, and cleanup
+- **Models**: Configuration and data models
+- **Utilities**: Shared helper functions
 
-1. **Login Functionality**
-    - Successful login with valid credentials
-    - Failed login with invalid credentials
-    - Failed login with locked out user
+## 🛠️Technical Implementation
 
-2. **Shopping Cart Functionality**
-    - Add single item to cart
-    - Add multiple items to cart
-    - Remove item from cart
+### 1. UI Testing Architecture
+- **Page Object Model**: Each page is represented by a class inheriting from BasePage
+- **Step Definitions**: Implement BDD steps using page objects
+- **Configuration**: Environment settings in appsettings.json
+- **Navigation**: Centralized navigation management
+- **Authentication**: Reusable login functionality
 
-3. **Checkout Process**
-    - Complete checkout with valid information
-    - Validate checkout information requirements
-    - Verify item details on checkout summary
-    - Cancel checkout process
+### 2. API Testing Architecture
+- **API Client**: Wrapper for HTTP requests
+- **Models**: Strongly-typed request/response objects
+- **Step Definitions**: BDD implementation for API operations
+- **Data Management**: Test data creation and cleanup
 
-## 🛠️Setup Instructions
+### 3. Core Framework Features
+- **Dependency Injection**: Using SpecFlow's container
+- **Configuration Management**: Using Microsoft.Extensions.Configuration
+- **Logging**: Structured logging with Serilog
+- **Screenshot Capture**: Automatic capture on test failure
+- **Cross-browser Testing**: Support for multiple browsers
+- **Clean Test Data**: Automatic cleanup after tests
 
-1. Clone the repository
-2. Install prerequisites:
-    - .NET 8 SDK
-    - JetBrains Rider IDE or VS
-   - Playwright browsers: `pwsh bin/Debug/net8.0/playwright.ps1 install`
-3. Restore NuGet packages:
+## 💡Best Practices
+
+### 1. Code Organization
+- Clear separation between UI and API tests
+- Reusable components and utilities
+- Consistent naming conventions
+- Strong typing and proper error handling
+
+### 2. Test Design
+- BDD approach with SpecFlow
+- Independent test execution
+- Clear test scenarios
+- Comprehensive assertions
+- Proper test cleanup
+
+### 3. Framework Features
+- Explicit waits for UI elements
+- Screenshot capture on failure
+- Structured logging
+- Response validation for API tests
+## ❓Why
+
+### Why Playwright?
+
+- **Modern Architecture**: Built for today's dynamic web applications
+- **Auto-waiting**: Intelligent handling of dynamic elements
+- **Cross-browser Support**: Chrome, Firefox, Safari, and Edge
+- **Network Interception**: Built-in support for API mocking and interception
+- **Trace Viewer**: Powerful debugging with step-by-step replay
+- **Codegen**: Automatic test script generation
+### Why SpecFlow?
+- **Natural Language Tests**: Business-readable test scenarios using Gherkin syntax
+- **Living Documentation**: Tests serve as up-to-date system documentation
+- **Bridge Between Teams**: Facilitates communication between technical and non-technical stakeholders
+- **Rich Ecosystem**: Strong .NET integration and extensive plugin support
+- **Parallel Execution**: Built-in support for running tests concurrently
+- **Data-Driven Testing**: Easy handling of test data through Examples and DataTables
+- **Hooks & Context Injection**: Powerful test lifecycle management and dependency injection
+- **Reusable Steps**: Share steps across multiple scenarios reducing code duplication
+
+### Why Playwright & SpecFlow Together?
+- **Modern Web Testing**: Playwright's modern architecture combined with SpecFlow's BDD approach
+- **Cross-browser Validation**: Easy to test scenarios across different browsers
+- **Auto-waiting**: Playwright's smart waiting mechanism makes SpecFlow steps more reliable
+- **API & UI Testing**: Perfect combination for end-to-end testing covering both UI and API layers
+- **Maintainable Framework**: Clean architecture with Page Object Model and step reusability
+- **Debugging Features**: Playwright's trace viewer helps debug failed SpecFlow scenarios
+- **Strong Typing**: Both tools work well with C#'s type system for robust test development
+## 🚀Getting Started
+
+### Prerequisites
 ```bash
 dotnet restore
+pwsh bin/Debug/net8.0/playwright.ps1 install
 ```
-```xml
-<ItemGroup>
-    <PackageReference Include="coverlet.collector" Version="6.0.0"/>
-    <PackageReference Include="FluentAssertions" Version="6.12.0" />
-    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.8.0"/>
-    <PackageReference Include="Microsoft.Playwright" Version="1.41.2" />
-    <PackageReference Include="Microsoft.Playwright.NUnit" Version="1.27.1"/>
-    <PackageReference Include="NUnit" Version="4.0.1" />
-    <PackageReference Include="NUnit3TestAdapter" Version="4.5.0"/>
-    <PackageReference Include="Serilog" Version="3.1.1" />
-    <PackageReference Include="Serilog.Sinks.Console" Version="5.0.1" />
-    <PackageReference Include="Serilog.Sinks.File" Version="5.0.0" />
-    <PackageReference Include="SpecFlow.NUnit" Version="3.9.74" />
-    <PackageReference Include="SpecFlow.Plus.LivingDocPlugin" Version="3.9.57" />
-</ItemGroup>
-```
-4. Build the project:
+### Run Tests
+
 ```bash
-dotnet build
+dotnet test --framework net 8.0
 ```
-
-## 🚀Running Tests
-
-### Command Line
-```bash
-dotnet test --framework net8.0
-```
-
-### JetBrains Rider
-1. Open Unit Tests window
-2. Right-click on the test/folder and select 'Run' or use the play button
-3. You can also run tests directly from the feature files or test classes
-
-## ⚙️Configuration
-
-The `appsettings.json` file contains test configuration:
-
-```json
-{
-  "TestSettings": {
-    "BaseUrl": "https://www.saucedemo.com",
-    "DefaultTimeout": 30000,
-    "Browser": "chromium",
-    "Headless": true
-  }
-}
-```
-
-## 💻Framework Features
-
-1. **Page Object Model**
-    - Maintainable and reusable page objects
-    - Base page with common functionality
-    - Centralized element locators
-
-2. **BDD Approach**
-    - Feature files in Gherkin syntax
-    - Step definitions mapping
-    - Scenario context sharing
-
-3. **Robust Test Design**
-    - Explicit waits
-    - Error handling
-    - Clear assertions
-    - Clean code practices
-
-4. **Advanced Debugging Capabilities**
-    - Automatic screenshot capture on test failure
-    - Comprehensive logging system using Serilog
-    - Detailed test execution logs with timestamps
-    - Console and file logging support
-
-## 📄Architecture Overview
-
-### Core Design Principles
-
-1. **Separation of Concerns**
-    - Clear separation between test specifications (Features), test logic (Step Definitions), and page interactions (Page Objects)
-    - Each component has a single responsibility and purpose
-    - Modular design allows for easy maintenance and extensions
-
-2. **Page Object Model Implementation**
-    - BasePage class provides common functionality and error handling
-    - Each page object encapsulates its own selectors and methods
-    - Strong typing and clear method names improve maintainability
-    - Reusable components reduce code duplication
-
-3. **BDD Implementation**
-    - Features written in Gherkin syntax for better readability
-    - Step definitions map directly to page object methods
-    - Scenario context allows for data sharing between steps
-    - Clear separation between test specifications and implementation
-
-4. **Test Data Management**
-    - Test data defined in feature files for better maintainability
-    - Data tables used for complex test data
-    - Clear separation between test data and test logic
-
-5. **Error Handling and Debugging**
-    - Comprehensive logging using Serilog
-    - Automatic screenshot capture on test failure
-    - Detailed error messages and stack traces
-    - Easy to debug and maintain
-
-### Framework Components
-
-1. **Base Components**
-    - BasePage: Abstract class providing common functionality
-    - TestHooks: Manages test lifecycle and setup/teardown
-    - LoggerConfig: Configures logging system
-
-2. **Page Objects**
-    - Encapsulate page-specific functionality
-    - Handle element interactions
-    - Provide high-level business methods
-
-3. **Step Definitions**
-    - Map Gherkin steps to code
-    - Coordinate between feature files and page objects
-    - Handle test assertions
-
-4. **Support Infrastructure**
-    - Logging system for debugging
-    - Screenshot capture for failure analysis
-    - Configuration management
-
-### Design Decisions
-
-1. **Choice of Technologies**
-    - Playwright: Modern, reliable browser automation
-    - SpecFlow: Industry-standard BDD framework
-    - Serilog: Flexible, structured logging
-    - NUnit: Robust test framework
-
-2. **Error Handling Strategy**
-    - Automatic screenshot capture on failure
-    - Detailed logging of all actions
-    - Clear error messages
-    - Stack traces for debugging
-
-3. **Maintainability Features**
-    - Centralized configuration
-    - Reusable components
-    - Clean code practices
-    - Comprehensive documentation
-
-## ✅Best Practices Implemented
-
-1. **Code Organization**
-    - Clear folder structure
-    - Separation of concerns
-    - Reusable components
-
-2. **Test Reliability**
-    - Proper element waits
-    - Robust selectors
-    - Error handling
-
-3. **Maintainability**
-    - DRY principles
-    - Page Object Pattern
-    - Base page abstraction

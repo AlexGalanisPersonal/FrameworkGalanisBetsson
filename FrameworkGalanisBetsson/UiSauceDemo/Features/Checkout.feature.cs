@@ -83,14 +83,14 @@ namespace SauceDemoUiBetsson.UiSauceDemo.Features
 #line 8
         testRunner.Given("I am logged in as \"standard\"", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
 #line hidden
-            TechTalk.SpecFlow.Table table6 = new TechTalk.SpecFlow.Table(new string[] {
+            TechTalk.SpecFlow.Table table11 = new TechTalk.SpecFlow.Table(new string[] {
                         "Item Name"});
-            table6.AddRow(new string[] {
+            table11.AddRow(new string[] {
                         "Sauce Labs Backpack"});
-            table6.AddRow(new string[] {
+            table11.AddRow(new string[] {
                         "Sauce Labs Bike Light"});
 #line 9
-        testRunner.And("I have added items to cart:", ((string)(null)), table6, "And ");
+        testRunner.And("I have added items to cart:", ((string)(null)), table11, "And ");
 #line hidden
         }
         
@@ -117,16 +117,16 @@ namespace SauceDemoUiBetsson.UiSauceDemo.Features
 #line 15
         testRunner.Given("I navigate to the checkout page", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
 #line hidden
-                TechTalk.SpecFlow.Table table7 = new TechTalk.SpecFlow.Table(new string[] {
+                TechTalk.SpecFlow.Table table12 = new TechTalk.SpecFlow.Table(new string[] {
                             "First Name",
                             "Last Name",
                             "Zip Code"});
-                table7.AddRow(new string[] {
+                table12.AddRow(new string[] {
                             "Alex",
                             "Galanis",
                             "15772"});
 #line 16
-        testRunner.When("I enter the following customer details:", ((string)(null)), table7, "When ");
+        testRunner.When("I enter the following customer details:", ((string)(null)), table12, "When ");
 #line hidden
 #line 19
         testRunner.Then("I proceed to checkout overview successfully", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");

@@ -35,8 +35,8 @@ public class PetSteps(ApiClient apiClient, ScenarioContext scenarioContext)
             Name = petName,
             Category = new Category { Id = 1, Name = "Test" },
             Status = "available",
-            PhotoUrls = new List<string>(),
-            Tags = new List<Tag>()
+            PhotoUrls = [],
+            Tags = []
         };
 
         var response = await apiClient.Post<Pet>("/pet", _testPet);
@@ -50,18 +50,19 @@ public class PetSteps(ApiClient apiClient, ScenarioContext scenarioContext)
 
         foreach (var row in table.Rows)
         {
-            var tags = row["Tags"].Split(',')
-                .Select(t => new Tag { Id = DateTime.Now.Ticks, Name = t.Trim() })
-                .ToList();
-
             var pet = new Pet
             {
                 Id = DateTime.Now.Ticks,
                 Name = row["Pet Name"],
                 Status = row["Status"],
                 Category = new Category { Id = 1, Name = "Test" },
-                Tags = tags,
-                PhotoUrls = new List<string>()
+                Tags = row["Tags"].Split(',')
+                    .Select(tag => new Tag 
+                    { 
+                        Id = DateTime.Now.Ticks, 
+                        Name = tag.Trim() 
+                    })
+                    .ToList()
             };
 
             var response = await apiClient.Post<Pet>("/pet", pet);
@@ -70,6 +71,7 @@ public class PetSteps(ApiClient apiClient, ScenarioContext scenarioContext)
                 _createdPets.Add(response);
             }
         }
+    
         scenarioContext["CreatedPets"] = _createdPets;
     }
 
@@ -115,8 +117,7 @@ public class PetSteps(ApiClient apiClient, ScenarioContext scenarioContext)
         var requiredTags = tags.Split(',').Select(t => t.Trim().ToLowerInvariant()).ToHashSet();
         var createdPetIds = _createdPets.Select(p => p.Id).ToHashSet();
 
-        var response = await apiClient.Get<List<Pet>>($"/pet/findByTags?tags={tags}");
-        if (response == null) response = new List<Pet>();
+        var response = await apiClient.Get<List<Pet>>($"/pet/findByTags?tags={tags}") ?? [];
 
         var filteredResponse = response
             .Where(p => createdPetIds.Contains(p.Id)) // Test-created pets only

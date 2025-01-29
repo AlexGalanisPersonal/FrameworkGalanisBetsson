@@ -7,7 +7,7 @@ So that I can keep the pet inventory up to date
     Scenario: Add a new pet to the store
         Given I have a new pet with the following details
           | Name   | Category | Status    |
-          | Alex   | Cat      | available |
+          | Alex   | Dog      | available |
         When I send a request to add the pet
         Then the pet should be successfully added
         And I can retrieve the pet by ID
@@ -18,8 +18,9 @@ So that I can keep the pet inventory up to date
         Then the pet's status should be updated successfully
         And the pet's new status should be "sold"
 
+    @DeletePet
     Scenario: Delete a pet from the store
-        Given I have an existing pet in the store with name "BillTheCat"
+        Given I have an existing pet in the store with name "AlexTheDog"
         When I delete the pet from the store
         Then the pet should be successfully deleted
         And retrieving the pet should return not found
