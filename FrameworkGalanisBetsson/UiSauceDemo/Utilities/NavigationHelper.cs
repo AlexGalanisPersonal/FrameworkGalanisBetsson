@@ -1,8 +1,7 @@
-﻿using Microsoft.Playwright;
-using SauceDemoUiBetsson.Drivers;
+﻿using SauceDemoUiBetsson.Drivers;
 using SauceDemoUiBetsson.Models;
 
-namespace SauceDemoUiBetsson.Utilities;
+namespace SauceDemoUiBetsson.UiSauceDemo.Utilities;
 public class NavigationHelper(BrowserDriver browserDriver, TestSettings settings)
 {
     public async Task GoToLogin() => await browserDriver.Page.GotoAsync(settings.BaseUrl);

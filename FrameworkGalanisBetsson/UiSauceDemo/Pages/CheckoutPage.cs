@@ -1,6 +1,6 @@
 ﻿using Microsoft.Playwright;
 using SauceDemoUiBetsson.Models;
-using SauceDemoUiBetsson.Pages;
+using SauceDemoUiBetsson.UiSauceDemo.Models;
 
 namespace SauceDemoUiBetsson.UiSauceDemo.Pages;
 

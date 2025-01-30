@@ -1,6 +1,6 @@
 ﻿using Microsoft.Playwright;
 
-namespace SauceDemoUiBetsson.Pages;
+namespace SauceDemoUiBetsson.UiSauceDemo.Pages;
 
 public sealed class CartPage(IPage page) : BasePage(page)
 {

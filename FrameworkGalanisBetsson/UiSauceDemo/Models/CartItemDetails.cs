@@ -1,4 +1,4 @@
-﻿namespace SauceDemoUiBetsson.Models;
+﻿namespace SauceDemoUiBetsson.UiSauceDemo.Models;
 
 public class CartItemDetails
 {

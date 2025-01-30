@@ -1,7 +1,7 @@
 ﻿using Microsoft.Playwright;
 using Serilog;
 
-namespace SauceDemoUiBetsson.Pages;
+namespace SauceDemoUiBetsson.UiSauceDemo.Pages;
 
 public abstract class BasePage
 {

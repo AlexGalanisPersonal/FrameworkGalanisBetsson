@@ -1,8 +1,7 @@
 ﻿using Microsoft.Playwright;
 using SauceDemoUiBetsson.Drivers;
-using SauceDemoUiBetsson.Pages;
 using SauceDemoUiBetsson.UiSauceDemo.Pages;
-using SauceDemoUiBetsson.Utilities;
+using SauceDemoUiBetsson.UiSauceDemo.Utilities;
 using TechTalk.SpecFlow;
 
 namespace SauceDemoUiBetsson.UiSauceDemo.StepDefinitions;

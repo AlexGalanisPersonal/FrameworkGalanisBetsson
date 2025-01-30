@@ -5,7 +5,6 @@ using SauceDemoUiBetsson.ApiPetStore.Helpers;
 using SauceDemoUiBetsson.Drivers;
 using SauceDemoUiBetsson.Models;
 using SauceDemoUiBetsson.UiSauceDemo.Utilities;
-using SauceDemoUiBetsson.Utilities;
 using TechTalk.SpecFlow;
 
 namespace SauceDemoUiBetsson.Hooks;

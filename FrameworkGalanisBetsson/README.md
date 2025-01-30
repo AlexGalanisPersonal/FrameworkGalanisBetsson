@@ -103,7 +103,6 @@ Manages automated testing of the Pet Store API with components:
 - **Living Documentation**: Tests serve as up-to-date system documentation
 - **Bridge Between Teams**: Facilitates communication between technical and non-technical stakeholders
 - **Rich Ecosystem**: Strong .NET integration and extensive plugin support
-- **Parallel Execution**: Built-in support for running tests concurrently
 - **Data-Driven Testing**: Easy handling of test data through Examples and DataTables
 - **Hooks & Context Injection**: Powerful test lifecycle management and dependency injection
 - **Reusable Steps**: Share steps across multiple scenarios reducing code duplication

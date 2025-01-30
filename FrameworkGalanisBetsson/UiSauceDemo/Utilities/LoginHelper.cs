@@ -1,9 +1,8 @@
 ﻿using SauceDemoUiBetsson.Drivers;
 using SauceDemoUiBetsson.Models;
-using SauceDemoUiBetsson.Pages;
 using SauceDemoUiBetsson.UiSauceDemo.Pages;
 
-namespace SauceDemoUiBetsson.Utilities;
+namespace SauceDemoUiBetsson.UiSauceDemo.Utilities;
 
 public class LoginHelper(
     BrowserDriver browserDriver,

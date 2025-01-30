@@ -1,5 +1,4 @@
 ﻿using Microsoft.Playwright;
-using SauceDemoUiBetsson.Pages;
 
 namespace SauceDemoUiBetsson.UiSauceDemo.Pages;
 

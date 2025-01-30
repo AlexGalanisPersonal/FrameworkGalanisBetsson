@@ -1,4 +1,4 @@
-﻿using SauceDemoUiBetsson.Utilities;
+﻿using SauceDemoUiBetsson.UiSauceDemo.Utilities;
 using TechTalk.SpecFlow;
 
 namespace SauceDemoUiBetsson.UiSauceDemo.StepDefinitions;
